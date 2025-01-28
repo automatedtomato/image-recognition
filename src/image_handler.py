@@ -1,7 +1,8 @@
 from plistlib import InvalidFileException
 
 import PIL
-from PIL import Image
+from PIL import Image  # Library for handling images
+import numpy as np  # Library for working with images as numpy arrays
 
 class ImageHandler:
     """
@@ -9,7 +10,7 @@ class ImageHandler:
     """
     STANDARD_SIZE = (28, 28)
 
-    def load_image(self,path) -> Image.Image:
+    def load_image(self, path) -> Image.Image:
         """
         Loads an image from the given path and returns it in greyscale.
 
@@ -92,4 +93,70 @@ class ImageHandler:
 
         return final_image
 
-        return final_image
+    def image_to_matrix(self, image: Image.Image) -> np.ndarray:
+        """
+        Converts a greyscale image into a numpy array.
+
+        Args:
+            image (PIL.Image.Image): The image to convert.
+
+        Returns:
+            np.ndarray: The 2D numpy array representing the image.
+
+        Raises:
+            ValueError: If the image is not a PIL image.
+        """
+
+        # Verify input is PIL image
+        if not isinstance(image, Image.Image):
+            raise ValueError('Input must be a PIL image')
+
+        # Resize image
+        resized_img = self.resize_image(image)
+
+        # Convert image to numpy array (0-255)
+        image_array = np.array(resized_img)
+
+        # Normalize array (0-1)
+        normalized_array = image_array / 255.0
+
+        return normalized_array
+
+    def calculate_distance(self, n_arr1: np.ndarray, n_arr2: np.ndarray) -> float:
+        """
+        Calculates Mean Square Error between two normalized image arrays.
+            * Mean Square Error (MSE: 平均二乗誤差): 各値の誤差の二乗を平均したもの
+
+        Args:
+            n_arr1 (np.ndarray): First normalized image array (28x28)
+            n_arr2 (np.ndarray): Second normalized image array (28x28)
+            • This will compare two normalized matrices
+            • Return a number representing how different they are
+            • Lower number means more similar images
+
+        Returns:
+            float: Mean Square Error (smaller means more similar)
+
+        Raises:
+            ValueError: If arrays are not same shape or not 28x28
+        """
+
+        # Check if arrays are correct shape
+        if n_arr1.shape != (28, 28) or n_arr2.shape != (28, 28):
+            raise ValueError('Both arrays must be 28x28')
+
+        # Calculate MSE using numpy
+        return float(np.mean(np.square(n_arr1 - n_arr2)))
+
+        """
+        :::Without numpy:::
+        # Assuming n_arr1/n_arr2 are 28x28 lists
+        total_elements = len(n_arr1) * len(n_arr1[0]
+        suquared_diff_sum = 0.0
+        
+        for i in range(len(n_arr1)):  # Iterate over rows
+            for j in range(len(n_arr1[i])):  # Iterate over columns
+                squared_diff_sum += pow((n_arr1[i][j] - n_arr2[i][j]), 2)
+        
+        return squared_diff_sum / total_elements
+        """
