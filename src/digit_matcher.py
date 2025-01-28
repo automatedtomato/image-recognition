@@ -1,7 +1,8 @@
-from image_handler import ImageHandler
+from src.image_handler import ImageHandler
 import numpy as np
 from PIL import Image
 from typing import Dict, Tuple
+import os
 
 class DigitMatcher:
     """
@@ -42,6 +43,27 @@ class DigitMatcher:
         template_matrix = self.image_handler.image_to_matrix(image)
         # Store in templates dictionary
         self.templates[digit] = template_matrix
+
+    def load_all_templates(self, template_dir: str) -> None:
+        """
+        Load all template images from directory.
+
+        Args:
+            template_dir (str): Path to directory containing template images
+
+        Raises:
+            FileNotFoundError
+            ValueError
+        """
+        # Check if directory exists
+        if not os.path.exists(template_dir):
+            raise FileNotFoundError(f'Template directory not found: {template_dir}')
+
+        # Load each template (0-9)
+        for digit in range(10):
+            # Look for template
+            template_path = os.path.join(template_dir, f'template_{digit}.png')
+            self.load_template(digit, template_path)
 
     def match_digit(self, image: Image.Image) -> Tuple[int, float]:
         """

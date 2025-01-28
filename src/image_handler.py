@@ -1,3 +1,4 @@
+import os.path
 from plistlib import InvalidFileException
 
 import PIL
@@ -96,6 +97,7 @@ class ImageHandler:
     def image_to_matrix(self, image: Image.Image) -> np.ndarray:
         """
         Converts a greyscale image into a numpy array.
+        Black pixels (digit) become 1.0, white pixels (background) become 0.0
 
         Args:
             image (PIL.Image.Image): The image to convert.
@@ -118,7 +120,7 @@ class ImageHandler:
         image_array = np.array(resized_img)
 
         # Normalize array (0-1)
-        normalized_array = image_array / 255.0
+        normalized_array = 1.0 - (image_array / 255.0)
 
         return normalized_array
 
