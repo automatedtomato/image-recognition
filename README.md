@@ -70,10 +70,9 @@ python -m unittest tests/test_image_handler.py
 4. Implement basic template matching algorithm
 
 ## Next Steps
-1. Complete test suite implementation
-2. Add template digit images
-3. Test with real handwritten digits
-4. Add performance metrics
+1. Modify template digit images
+2. Test with real handwritten digits
+3. Add performance metrics
 
 ## Learning Focus
 This project emphasizes:
